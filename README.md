@@ -6,7 +6,7 @@ Status: Proof of concept, work-in-progress
 
 ## About
 
-Building on top of Ktor's Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits to ensure that requests and reponses adhere to a commonly defined API, for which the code can be shared between server and different clients.
+Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits to ensure that requests and reponses adhere to a commonly defined API, for which the code can be shared between server and different clients.
 
 ## Overview
 

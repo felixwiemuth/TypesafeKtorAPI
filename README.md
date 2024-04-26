@@ -10,6 +10,8 @@ Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe req
 
 ## Overview
 
+Find the whole example in directories [tka-example-api](tka-example-api), [tka-example-client](tka-example-client) and [tka-example-server](tka-example-server).
+
 ### Defining the API
 
 #### Define serializable classes for request/response parameters

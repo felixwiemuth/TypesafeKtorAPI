@@ -6,7 +6,7 @@ Status: Proof of concept, work-in-progress
 
 ## About
 
-Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits to ensure that requests and reponses adhere to a commonly defined API, for which the code can be shared between server and different clients.
+Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits to ensure that requests and responses adhere to a commonly defined API, for which the code can be shared between server and different clients.
 
 ## Overview
 
@@ -27,7 +27,7 @@ data class Order(
 
 #### Define requests and routes
 
-The API is defined via a hierarchy of Resource classes (as known from Ktor) plus adding `Get`/`Post` interfaces under each endpoint. These interfaces must extend the libary's `GET`/`POST` interfaces, specifying request type, result type, error type and parameter type (only for POST).
+The API is defined via a hierarchy of Resource classes (as known from Ktor) plus adding `Get`/`Post` interfaces under each endpoint. These interfaces must extend the library's `GET`/`POST` interfaces, specifying request type, result type, error type and parameter type (only for POST).
 
 ```kotlin
 @Resource("/orders")
@@ -165,3 +165,39 @@ when (val r = OrdersApi
     is ApiResponse.Err -> println("Error sending or receiving")
 }
 ```
+
+## Usage
+
+### Setup
+
+#### Adding the library to the project
+
+Because of being in a very early stage, the library is currently not published in any repository and has to be added manually to a project, for example as a git submodule:
+
+`git submodule add https://github.com/felixwiemuth/TypesafeKtorAPI`
+
+Then register the modules in your project's `settings.gradle` (assuming that the library is cloned to a subdirectory `TypesafeKtorAPI` of the project):
+
+```kotlin
+include("TypesafeKtorAPI:tka-base")
+include("TypesafeKtorAPI:tka-server")
+include("TypesafeKtorAPI:tka-client")
+include("TypesafeKtorAPI:tka-client-plugin")
+```
+
+#### Project structure and dependencies
+
+A project using this library would usually introduce a separate API-module in addition to a server- and several client-modules.
+
+The purpose and dependencies for the different modules are as follows:
+
+| Module | Purpose                                                                           | Dependencies                                                                                                                                                                                                                                        |
+|:-------|:----------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| API    | API definition and data classes to be shared<br>between server and different clients | <ul><li>io.ktor:ktor-resources</li><li>tka-base</li></ul>                                                                                                                                                                                           |
+| Server | Implementation of the API                                                         | <ul><li>io.ktor:ktor-server-cors</li><li>io.ktor:ktor-server-content-negotiation</li><li>io.ktor:ktor-server-serialization-kotlinx.json</li><li>io.ktor:ktor-server-resources</li><li>tka-base</li><li>tka-server</li><li>your-api-module</li></ul> |
+| Client | Usage of the API                                                                  | <ul><li>io.ktor:ktor-client-core</li>io.ktor:ktor-client-content-negotiation</li><li>io.ktor:ktor-client-serialization-kotlinx.json</li><li>io.ktor:ktor-client-resources</li><li>tka-base</li><li>tka-client</li><li>tka-client-plugin (optional)</li><li>your-api-module</li></ul>     |
+
+The TKA-dependencies can be added to the modules via
+`implementation("TypesafeKtorAPI:tka-base")` etc.
+
+Note that for Kotlin **Multiplatform** projects, the `tka-client-plugin` dependency has to be added differently, namely via the `add` function in the top-level `dependencies` section. See the [official documentation](https://kotlinlang.org/docs/ksp-multiplatform.html) for further information.

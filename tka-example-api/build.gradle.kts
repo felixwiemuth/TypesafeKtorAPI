@@ -41,7 +41,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(projects.tkaBase)
-                implementation(libs.ktor.client.resources)
+                implementation(libs.ktor.resources)
             }
         }
         val commonTest by getting {

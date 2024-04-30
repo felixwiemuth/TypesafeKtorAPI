@@ -31,6 +31,7 @@ interface GET<R, T, E> {
  * General interface for "post" API functions. It is extended in the respective API files to specify APIs.
  * It is implemented in the server to implement the functionality.
  * @param R Resource class defining the API route
+ * @param P Parameter type for the request's body
  * @param T Return type for the API call
  * @param E Error type for the API call
  */

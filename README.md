@@ -10,7 +10,7 @@ Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe req
 
 ## Overview
 
-Find the whole example in directories [tka-example-api](tka-example-api), [tka-example-client](tka-example-client) and [tka-example-server](tka-example-server).
+Find the whole example in the modules [tka-example-api](tka-example-api), [tka-example-client](tka-example-client) and [tka-example-server](tka-example-server).
 
 ### Defining the API
 
@@ -55,6 +55,9 @@ class OrdersApi {
 ### Implementing the API server-side
 
 #### Defining the logic for each request
+
+Implementing the logic simply consists of implementing the `Get` and `Post` interfaces from the API definition.
+
 ```kotlin
 object OrdersController {
     object ListOrders : OrdersApi.ListOrders.Get {
@@ -79,7 +82,8 @@ object OrdersController {
 
 #### Registering the routes
 
-There will be an annotation generating this glue in the future:
+First define an extension function on `io.ktor.server.routing.Routing` which adds routes for each Resource class using `io.ktor.server.resources.get` etc. by delegating to the implemented `get` and `post` functions.
+There will be an annotation generating this glue in the future.
 
 ```kotlin
 fun Routing.ordersRoutes() {
@@ -94,10 +98,35 @@ fun Routing.ordersRoutes() {
 
 ```
 
+Finally, the routes must be registered with the Ktor server:
+
+```kotlin
+embeddedServer(Netty, 3000) {
+    install(ContentNegotiation) {
+        json()
+    }
+    install(Resources)
+    install(CORS) {
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Delete)
+        anyHost()
+        allowHeader(HttpHeaders.ContentType)
+        allowCredentials = true
+        allowNonSimpleContentTypes = true
+    }
+    routing {
+        ordersRoutes()
+    }
+}.start(wait = true)
+```
+
 
 ### Using the API from a client
 
 #### Registering APIs at the client
+
+The `@WithApis` generates glue for the API's Resource classes to send requests using the annotated client.
 
 ```kotlin
 @WithApis(apis = [OrdersApi::class])
@@ -111,6 +140,8 @@ val client = HttpClient {
 ```
 
 #### Making requests
+
+Requests can then be made by calling `get` and `post` on the Resource classes.
 
 ```kotlin
 // HTTP GET: /orders/list?userId=42?categoryId=10

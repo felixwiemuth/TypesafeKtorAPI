@@ -4,9 +4,52 @@ A Kotlin Multiplatform library for enabling type-safe HTTP APIs with code shared
 
 Status: Proof of concept, work-in-progress
 
+## Table of contents
+
+<!--- TOC -->
+
+* [About](#about)
+* [Features](#features)
+* [Use cases](#use-cases)
+* [Overview](#overview)
+* [Setup and Usage](#setup-and-usage)
+
+<!--- END -->
+
 ## About
 
-Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits to ensure that requests and responses adhere to a commonly defined API, for which the code can be shared between server and different clients.
+Building on top of [Ktor](https://ktor.io)'s Resource classes for [type-safe requests](https://ktor.io/docs/type-safe-request.html) with Ktor client and [type-safe routing](https://ktor.io/docs/type-safe-routing.html) for Ktor server, this library adds the remaining bits for fully type-safe requests and responses which adhere to a commonly defined API, for which the code can be shared between server and different clients.
+
+## Features
+
+- **HTTP API** which can be used from **any** client, also without this library or Ktor
+- Free choice of API structure
+  - Custom **endpoint hierarchy** with HTTP methods like **POST, GET, PUT, DELETE**
+  - Optional **path-** and **query parameters**
+  - Supports verb- and noun-centric approaches
+- **RPC-style**: an API call is just a call to a suspend function
+  - Together with Ktor, the library takes care of serialization, sending/receiving and structured result-/error-handling
+- **Fully type-safe**: client can only send requests adhering to the API and server can only send responses corresponding to the request
+  - **Custom request, response and error types** - any serializable Kotlin class can be used
+- API-definition via pure Kotlin code
+  - Structured **overview** and **documentation** without any extra tools
+  - **Code-completion** in IDEs
+  - **Easy refactoring** just as any other code
+- Shared code
+  - Use the same API-definition at server to implement requests and at client to make requests
+  - **Multiplatform**: supports same platforms as Ktor and enables code-sharing
+  - **Elimination of errors**: No more bugs due to inconsistent updates at client and server - changes apply everywhere directly and type-safety ensures that all parts are updated accordingly
+- Code generation for (the little amount of) glue
+- Building on top of Ktor, using the existing features and leaving flexibility in configuring client and server
+- JSON serialization (or any other format supported by Ktor / kotlinx.serialization)
+
+
+## Use cases
+
+- **Accelerate development** by reducing redundancy and making changes as simple as IDE-supported refactoring:
+  - One shared API definition accessible by server and all clients on different platforms
+  - Elimination of whole class of errors due to type-safety and sharing of the same code
+- Model an **external API** to allow type-safe usage on different clients
 
 ## Overview
 
@@ -166,11 +209,11 @@ when (val r = OrdersApi
 }
 ```
 
-## Usage
+## Setup and Usage
 
-### Setup
+<!-- ### Setup -->
 
-#### Adding the library to the project
+### Adding the library to the project
 
 Because of being in a very early stage, the library is currently not published in any repository and has to be added manually to a project, for example as a git submodule:
 
@@ -185,7 +228,7 @@ include("TypesafeKtorAPI:tka-client")
 include("TypesafeKtorAPI:tka-client-plugin")
 ```
 
-#### Project structure and dependencies
+### Project structure and dependencies
 
 A project using this library would usually introduce a separate API-module in addition to a server- and several client-modules.
 
